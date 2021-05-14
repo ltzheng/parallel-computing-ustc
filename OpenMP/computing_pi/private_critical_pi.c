@@ -19,7 +19,7 @@ void main()
     double x = 0.0;
     step = 1.0 / (double)num_steps;
     omp_set_num_threads(NUM_THREADS);
-#pragma omp parallel private(x, sum) 
+#pragma omp parallel private(i, x, sum) 
 //variable x and sum are private for each thread
 {
     int id;
