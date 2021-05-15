@@ -50,3 +50,8 @@
     ```
 
 ### PSRS Sorting
+
+```bash
+g++ psrs.cpp -fopenmp -o psrs
+./psrs
+```
