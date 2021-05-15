@@ -19,7 +19,7 @@ int main()
     int array[n];
     for (int i = 0; i < n; i++)
     {
-        array[i] = rand() % (INT32_MAX - 0) + 0;
+        array[i] = rand() % (INT16_MAX - 0) + 0;
     }
     int result[n];
     int sample[p * p];
