@@ -7,7 +7,7 @@ double step;
 //thread 0 iterates step 0,2,4,...
 //thread 1 iterates step 1,3,5,...
 /*
-    when critical secition is executed by thread 0,
+    when critical section is executed by thread 0,
     if thread 1 arrived here, it will be blocked until
     thread 0 exits the critival section
 */

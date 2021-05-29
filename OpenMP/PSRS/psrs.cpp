@@ -1,15 +1,20 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <omp.h>
 #include <iostream>
 #include <vector>
 #include <queue>
 #include <algorithm>
+#include <time.h>
+#include <chrono>
+using namespace std;
+using namespace chrono;
 #define NUM_THREADS 4
 
 int p = 4;
 int n = 160; //length of the array
-std::vector<int> merge2DArrays(std::vector<std::vector<int>> arrays, int l, int r);
-std::vector<int> merge(std::vector<int> a, std::vector<int> b);
+vector<int> merge2DArrays(vector<vector<int>> arrays, int l, int r);
+vector<int> merge(vector<int> a, vector<int> b);
 
 
 int main()
@@ -17,9 +22,11 @@ int main()
     int i;
     int num = n / p;
     int array[n];
+    int compareArray[n]; // same as array, for serial compare
     for (int i = 0; i < n; i++)
     {
         array[i] = rand() % (INT16_MAX - 0) + 0;
+        compareArray[i] = array[i];
     }
     int result[n];
     int sample[p * p];
@@ -31,11 +38,16 @@ int main()
     int leftPointer[p][p];
     int arrayProcessor[p][p] = {0};
 
+    auto serial_start = system_clock::now();
+    sort(compareArray, compareArray + n);
+    auto serial_end = system_clock::now();
+
+    auto par_start = system_clock::now();
 #pragma omp parallel private(i)
 {
     int processorId = omp_get_thread_num();
     //averagely divide & locally sort
-    std::sort(array + processorId * num, array + (processorId + 1) * num);
+    sort(array + processorId * num, array + (processorId + 1) * num);
 #pragma omp for
     //sample
     for (i = 0; i < p; i++) 
@@ -44,7 +56,7 @@ int main()
     }
 }
     //sort p^2 samples with 1 processor
-    std::sort(sample, sample + p * p);
+    sort(sample, sample + p * p);
     //select p-1 pivots with 1 processor
     for (int j = 0; j < p - 1; j++)
     {
@@ -98,23 +110,23 @@ int main()
     }
 #pragma omp barrier
     //merge sort
-    std::vector<std::vector<int>> exchangedArray;
+    vector<vector<int>> exchangedArray;
     for (int k = 0; k < p - 1; k++)
     {
-        std::vector<int> temp(result + leftPointer[k][processorId], result + leftPointer[k + 1][processorId]);
+        vector<int> temp(result + leftPointer[k][processorId], result + leftPointer[k + 1][processorId]);
         exchangedArray.push_back(temp);
     }
     if (processorId == p - 1)
     {
-        std::vector<int> temp(result + leftPointer[p - 1][p - 1], result + n);
+        vector<int> temp(result + leftPointer[p - 1][p - 1], result + n);
         exchangedArray.push_back(temp);
     }
     else
     {
-        std::vector<int> temp(result + leftPointer[p - 1][processorId], result + leftPointer[0][processorId + 1]);
+        vector<int> temp(result + leftPointer[p - 1][processorId], result + leftPointer[0][processorId + 1]);
         exchangedArray.push_back(temp);
     }
-    std::vector<int> res = merge2DArrays(exchangedArray, 0, p - 1);
+    vector<int> res = merge2DArrays(exchangedArray, 0, p - 1);
     int res_size = res.size();
     int start_pos = leftPointer[0][processorId];
     for (int i = 0; i < res_size; i++)
@@ -122,14 +134,22 @@ int main()
         array[start_pos + i] = res[i];
     }
 }
-    //display sort result
+    auto par_end = system_clock::now();
+    
+    //display parallel sort result
     for (int l = 0; l < n; l++)
     {
         printf("%d ", array[l]);
     }
+    cout << endl;
+
+    auto par_time = duration_cast<nanoseconds>(par_end - par_start);
+    auto serial_time = duration_cast<nanoseconds>(serial_end - serial_start);
+    cout << "Parallel time: " << par_time.count() << endl;
+    cout << "Serial time: " << serial_time.count() << endl;
 }
 
-std::vector<int> merge2DArrays(std::vector<std::vector<int>> arrays, int l, int r)
+vector<int> merge2DArrays(vector<vector<int>> arrays, int l, int r)
 {
     if (l == r)
         return arrays[l];
@@ -137,16 +157,16 @@ std::vector<int> merge2DArrays(std::vector<std::vector<int>> arrays, int l, int 
         return merge(arrays[l], arrays[r]);
 
     int mid = l + (r - l) / 2;
-    std::vector<int> left = merge2DArrays(arrays, l, mid);
-    std::vector<int> right = merge2DArrays(arrays, mid + 1, r);
+    vector<int> left = merge2DArrays(arrays, l, mid);
+    vector<int> right = merge2DArrays(arrays, mid + 1, r);
 
     return merge(left, right);
 }
 
-std::vector<int> merge(std::vector<int> a, std::vector<int> b)
+vector<int> merge(vector<int> a, vector<int> b)
 {
     int l = a.size() + b.size();
-    std::vector<int> res(l);
+    vector<int> res(l);
 
     int i = 0, j = 0;
     for (int k = 0; k < l; k++)

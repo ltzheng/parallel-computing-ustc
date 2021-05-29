@@ -127,9 +127,11 @@ int main()
     //比较加速比
     cudaMemcpy(c, cuda_c, sizeof(float) * ROW_A * COL_B, cudaMemcpyDeviceToHost);
     auto par_end = system_clock::now();
+
     auto cpu_start = system_clock::now();
     matMulCPU(a, b, d);
     auto cpu_end = system_clock::now();
+    
     auto par_time = duration_cast<nanoseconds>(par_end - par_start);
     auto cpu_time = duration_cast<nanoseconds>(cpu_end - cpu_start);
     cout << "Matrix C:" << endl;
