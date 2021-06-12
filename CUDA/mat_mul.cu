@@ -140,7 +140,7 @@ int main()
     displayMat(d, ROW_A, COL_B);
     cout << "Parallel time: " << par_time.count() << endl;
     cout << "Cpu time: " << cpu_time.count() << endl;
-    cout << "Speedup: " << cpu_time.count() /par_time.count() << endl;
+    cout << "Speedup: " << cpu_time.count() / par_time.count() << endl;
     //Free
     cudaFree(cuda_a);
     cudaFree(cuda_b);
