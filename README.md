@@ -1,57 +1,31 @@
 # Parallel Computing Course at USTC
 
-## Lab 1
+## Lab 1: OpenMP
 
-### Computing $\pi$
+- Computing $\pi$
 
-1) serial
+    1) serial
 
-    [serial_pi.c](/OpenMP/computing_pi/serial_pi.c)
+    2) parallel region
 
-    ```bash
-    gcc serial_pi.c -o serial_pi
-    ./serial_pi
-    ```
+    3) parallel with shared tasks
 
-2) parallel
+    4) private variables & critical section
 
-    see [parallel_region_pi.c](/OpenMP/computing_pi/parallel_region_pi.c)
+    5) reduction
 
-    ```bash
-    gcc parallel_region_pi.c -fopenmp -o parallel_region_pi
-    ./parallel_region_pi
-    ```
+- Parallel Sorting by Regular Sampling (PSRS)
 
-3) parallel with shared tasks
+## Lab 2: MPI
 
-    see [shared_tasks_pi.c](/OpenMP/computing_pi/shared_tasks_pi.c)
+- Computing $\pi$
 
-    ```bash
-    gcc shared_tasks_pi.c -fopenmp -o shared_tasks_pi
-    ./shared_tasks_pi
-    ```
+- PSRS
 
-5) parallel with private variables & critical section
+## Lab 3: CUDA Programming
 
-    see [private_critical_pi.c](/OpenMP/computing_pi/private_critical_pi.c)
+- Matrix Multiplication
 
-    ```bash
-    gcc private_critical_pi.c -fopenmp -o private_critical_pi
-    ./private_critical_pi
-    ```
+## Lab 4: Hadoop
 
-4) parallel with reduction
-
-    see [parallel_reduction_pi.c](/OpenMP/computing_pi/parallel_reduction_pi.c)
-
-    ```bash
-    gcc parallel_reduction_pi.c -fopenmp -o parallel_reduction_pi
-    ./parallel_reduction_pi
-    ```
-
-### PSRS Sorting
-
-```bash
-g++ psrs.cpp -fopenmp -o psrs
-./psrs
-```
+- Word count and length count of text files
